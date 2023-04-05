@@ -29,14 +29,25 @@ module.exports = {
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
+  // webpack-dev-server 可用于快速开发应用程序
   devServer: {
     port: port,
     open: true,
+    // 当出现编译错误或警告时，在浏览器中显示全屏覆盖。
+    // 只显示错误信息：
     overlay: {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    proxy: {
+      '/user/code': {
+        target: process.env.SERVER_BASE_URL
+      },
+      '/user/register': {
+        target: process.env.SERVER_BASE_URL
+      }
+    },
+    after: require('./mock/mock-server.js')
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
@@ -88,7 +99,7 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()

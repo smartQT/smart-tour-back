@@ -1,16 +1,16 @@
 import router from './router'
 import store from './store'
 import { Message } from 'element-ui'
-import NProgress from 'nprogress' // progress bar
+import NProgress from 'nprogress' // p  rogress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/register/code'] // no redirect whitelist
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
 
@@ -39,7 +39,7 @@ router.beforeEach(async(to, from, next) => {
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
 
-          // dynamically add accessible routes
+          // 动态添加可访问路由
           router.addRoutes(accessRoutes)
 
           // hack method to ensure that addRoutes is complete
@@ -56,7 +56,6 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

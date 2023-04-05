@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, register, registerEmail } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -7,7 +7,8 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  session: ''
 }
 
 const mutations = {
@@ -25,11 +26,14 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_SESSION: (state, session) => {
+    state.session = session
   }
 }
 
 const actions = {
-  // user login
+  // 登录用户
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
@@ -44,7 +48,7 @@ const actions = {
     })
   },
 
-  // get user info
+  // 获取用户信息
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
@@ -72,7 +76,7 @@ const actions = {
     })
   },
 
-  // user logout
+  // 注销用户
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
@@ -81,7 +85,7 @@ const actions = {
         removeToken()
         resetRouter()
 
-        // reset visited views and cached views
+        // reset visited views and cached views 重置访问的视图和缓存的视图
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
 
@@ -92,7 +96,44 @@ const actions = {
     })
   },
 
-  // remove token
+  // 注册
+  register({ commit }, info) {
+    return new Promise((resolve, reject) => {
+      register(info).then(response => {
+        const { data } = response
+
+        if (data.status === -1) {
+          reject(data.errorMsg)
+        }
+
+        commit('SET_SESSION', data.data)
+        resolve(data.data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  // 注册邮箱
+  registerEmail({ commit }, { email }) {
+    return new Promise((resolve, reject) => {
+      registerEmail(email).then(response => {
+        const { data } = response
+
+        if (!data) {
+          reject('验证失败，请再入填写邮箱发送验证码')
+        }
+
+        console.log('user/registerEmail: ', data)
+
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  // 移除 token
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
@@ -102,7 +143,7 @@ const actions = {
     })
   },
 
-  // dynamically modify permissions
+  // 动态修改权限
   async changeRoles({ commit, dispatch }, role) {
     const token = role + '-token'
 

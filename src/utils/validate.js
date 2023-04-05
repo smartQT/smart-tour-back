@@ -65,6 +65,15 @@ export function validEmail(email) {
 }
 
 /**
+ * @param {string} phone
+ * @returns {Boolean}
+ */
+export function validPhone(phone) {
+  const reg = /^1[3456789]\d{9}$/
+  return reg.test(phone)
+}
+
+/**
  * @param {string} str
  * @returns {Boolean}
  */
@@ -84,4 +93,38 @@ export function isArray(arg) {
     return Object.prototype.toString.call(arg) === '[object Array]'
   }
   return Array.isArray(arg)
+}
+
+/**
+ * 判断传入的参数是否为空
+ * @author joyxin
+ * @param {*} obj any
+ * @returns boolean
+ */
+export function isEmpty(obj) {
+  // 如果传入的对象为 null 或 undefined，直接判定为空
+  if (obj == null) return true
+
+  // 如果传入的对象为数组，遍历所有元素并递归调用 isEmpty 判断
+  if (isArray(obj)) {
+    return obj.every(item => isEmpty(item))
+  }
+
+  // 如果传入的对象为对象，遍历所有属性并递归调用 isEmpty 判断
+  if (typeof obj === 'object') {
+    return Object.keys(obj).every(key => isEmpty(obj[key]))
+  }
+
+  // 如果传入的对象为数字，直接判定为非空
+  if (typeof obj === 'number') {
+    return false
+  }
+
+  // 如果传入的对象为字符串，去除前后空格后判断是否为空
+  if (isString(obj)) {
+    return obj.trim() === ''
+  }
+
+  // 其他情况均视为空（包括布尔值和函数）
+  return true
 }

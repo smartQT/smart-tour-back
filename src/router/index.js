@@ -34,9 +34,9 @@ import nestedRouter from './modules/nested'
  */
 
 /**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
+ * 普通路由
+ * 没有权限要求的基本页面
+ * 所有角色都可以访问
  */
 export const constantRoutes = [
   {
@@ -53,6 +53,11 @@ export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/register/:id',
+    component: () => import('@/views/login/register'),
     hidden: true
   },
   {
@@ -125,10 +130,41 @@ export const constantRoutes = [
 ]
 
 /**
- * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
+ * 异步路由
+ * 需要根据用户角色动态加载的路由
  */
 export const asyncRoutes = [
+  {
+    path: '/attractions',
+    component: Layout,
+    redirect: '/attractions/list',
+    name: 'Attractions',
+    meta: {
+      title: '景区管理',
+      icon: 'attractions',
+      roles: ['admin', 'editor']
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/attractions/list'),
+        name: 'ListAttractions',
+        meta: {
+          title: '景区列表',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'add',
+        component: () => import('@/views/attractions/add'),
+        name: 'AddAttractions',
+        meta: {
+          title: '添加景区',
+          roles: ['admin', 'editor'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
   {
     path: '/permission',
     component: Layout,

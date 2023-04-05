@@ -42,7 +42,19 @@ function deepClone(source) {
   return targetObj
 }
 
+/**
+ *  格式化时间，仅支持输入 小时、分或者秒其中之一，不支持同时输入
+ * @author joyxin
+ * @param {string | number} time 时间 'hour' | 'minute' | 'second'
+ * @returns {string} 格式化后的时间
+ */
+function formatTime(time) {
+  const timeStr = '00' + time
+  return timeStr.slice(timeStr.length - 2)
+}
+
 module.exports = {
   param2Obj,
-  deepClone
+  deepClone,
+  formatTime
 }

@@ -136,7 +136,7 @@
 
 <script>
 'use strict'
-import request from '@/utils/request'
+import { request } from '@/utils/request'
 import language from './utils/language.js'
 import mimes from './utils/mimes.js'
 import data2blob from './utils/data2blob.js'
@@ -598,7 +598,7 @@ export default {
         if (scale.rotateRight) {
           const degree = ++scale.degree
           this.createImg(degree)
-          setTimeout(function() {
+          setTimeout(function () {
             rotate()
           }, 60)
         }
@@ -613,7 +613,7 @@ export default {
         if (scale.rotateLeft) {
           const degree = --scale.degree
           this.createImg(degree)
-          setTimeout(function() {
+          setTimeout(function () {
             rotate()
           }, 60)
         }
@@ -634,7 +634,7 @@ export default {
         if (scale.zoomAddOn) {
           const range = scale.range >= 100 ? 100 : ++scale.range
           this.zoomImg(range)
-          setTimeout(function() {
+          setTimeout(function () {
             zoom()
           }, 60)
         }
@@ -653,7 +653,7 @@ export default {
         if (scale.zoomSubOn) {
           const range = scale.range <= 0 ? 0 : --scale.range
           this.zoomImg(range)
-          setTimeout(function() {
+          setTimeout(function () {
             zoom()
           }, 60)
         }

@@ -10,15 +10,15 @@ const service = axios.create({
   timeout: 5000 // request timeout
 })
 
-// request interceptor
+// 请求拦截器
 service.interceptors.request.use(
   config => {
     // do something before request is sent
 
     if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
+      // 让每个请求携带标记
+      // ['X-Token'] 是一个自定义 headers key
+      // 请根据实际情况修改
       config.headers['X-Token'] = getToken()
     }
     return config
@@ -30,17 +30,17 @@ service.interceptors.request.use(
   }
 )
 
-// response interceptor
+// 响应拦截器
 service.interceptors.response.use(
   /**
-   * If you want to get http information such as headers or status
+   * 如果您想获取http信息，如头或状态
    * Please return  response => response
   */
 
   /**
-   * Determine the request status by custom code
-   * Here is just an example
-   * You can also judge the status by HTTP Status Code
+   * 通过自定义代码确定请求状态
+   * 这只是一个例子
+   * 您也可以通过HTTP状态码判断状态
    */
   response => {
     const res = response.data
@@ -82,4 +82,9 @@ service.interceptors.response.use(
   }
 )
 
-export default service
+const realService = axios.create({
+  baseURL: process.env.SERVER_BASE_URL, // url = base url
+  timeout: 5000 // request timeout
+})
+
+export { service as request, realService as realRequest }
